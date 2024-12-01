@@ -21,6 +21,6 @@ if __name__ == "__main__":
         left = list(map(int, left))
         right = list(map(int, right))
         part_1_result = part_1(left, right)
-        print(part_1_result)
         part_2_result = part_2(left, right)
+        print(part_1_result)
         print(part_2_result)
