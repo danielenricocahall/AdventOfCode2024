@@ -1,6 +1,6 @@
 
 
-def are_levels_safe(levels: list[int], apply_problem_dampener: bool = False) -> bool :
+def are_levels_safe(levels: list[int]) -> bool :
     level_diffs = [y - x for x, y in zip(levels[1::], levels[::1])]
     levels_are_all_decreasing = (all(level_diff > 0 for level_diff in level_diffs) or all(
         level_diff < 0 for level_diff in level_diffs))
