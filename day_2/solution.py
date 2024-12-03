@@ -1,11 +1,11 @@
 
 
-def are_levels_safe(levels: list[int], apply_problem_dampener: bool = False) -> bool :
+def are_levels_safe(levels: list[int]) -> bool :
     level_diffs = [y - x for x, y in zip(levels[1::], levels[::1])]
-    levels_are_all_decreasing = (all(level_diff > 0 for level_diff in level_diffs) or all(
+    levels_are_all_increasing_or_decreasing = (all(level_diff > 0 for level_diff in level_diffs) or all(
         level_diff < 0 for level_diff in level_diffs))
     level_diffs_in_range = all(1 <= abs(level_diff) <= 3 for level_diff in level_diffs)
-    return levels_are_all_decreasing and level_diffs_in_range
+    return levels_are_all_increasing_or_decreasing and level_diffs_in_range
 
 def problem_dampener_can_make_levels_safe(levels: list[int]) -> bool:
     for i, level in enumerate(levels):
