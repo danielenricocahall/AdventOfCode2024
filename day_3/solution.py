@@ -9,9 +9,7 @@ DO_PATTERN = re.compile(r"do\(\)")
 
 def part_1(corrupted_memory: str) -> int:
     matches = MUL_PATTERN.findall(corrupted_memory)
-    result = 0
-    for match in matches:
-        result += multiply_instructions(match)
+    result = sum(map(multiply_instructions, matches))
     return result
 
 
