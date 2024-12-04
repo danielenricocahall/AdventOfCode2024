@@ -14,23 +14,20 @@ def part_1(corrupted_memory: str) -> int:
 
 
 def part_2(corrupted_memory: str) -> int:
-    current_string = ""
-    i = 0
     result = 0
     do = True
-    while i < len(corrupted_memory):
-        current_string += corrupted_memory[i]
-        if match := MUL_PATTERN.findall(current_string):
+    start_pos, end_pos = 0, 1
+    while end_pos < len(corrupted_memory):
+        if match := MUL_PATTERN.findall(corrupted_memory, start_pos, end_pos):
             if do:
                 result += multiply_instructions(match[0])
-            current_string = ""
-        elif DONT_PATTERN.findall(current_string):
+            start_pos = end_pos
+        elif DONT_PATTERN.findall(corrupted_memory, start_pos, end_pos):
             do = False
-        elif DO_PATTERN.findall(current_string):
+        elif DO_PATTERN.findall(corrupted_memory, start_pos, end_pos):
             do = True
-        i += 1
+        end_pos += 1
     return result
-
 
 def multiply_instructions(instructions: str) -> int:
     operands = map(int, instructions.split(","))
