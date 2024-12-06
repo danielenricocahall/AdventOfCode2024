@@ -30,10 +30,10 @@ def predict_guard_route(puzzle: list[list[str]], guard_location: GuardLocation):
             distinct_positions.add(guard_location)
         else:
             current_rotation = (current_rotation + ROTATION_DEGREES) % (4 * ROTATION_DEGREES)
-        print(f"***STEP {len(distinct_positions)} TAKEN***")
         # for debugging on the test
-        #puzzle[guard_location.y][guard_location.x] = "X"
-        #display_puzzle(puzzle)
+        # print(f"***STEP {len(distinct_positions)} TAKEN***")
+        # puzzle[guard_location.y][guard_location.x] = "X"
+        # display_puzzle(puzzle)
     return len(distinct_positions)
 
 
