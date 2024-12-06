@@ -43,7 +43,7 @@ def predict_guard_route(puzzle: list[list[str]],
         # print(f"***STEP {len(distinct_positions)} TAKEN***")
         # puzzle[guard_location.y][guard_location.x] = "X"
         # display_puzzle(puzzle)
-    return len(distinct_positions)
+    return distinct_positions
 
 
 def guard_leaving_map(puzzle: list[list[str]], guard_location: MapLocation) -> bool:
@@ -51,16 +51,14 @@ def guard_leaving_map(puzzle: list[list[str]], guard_location: MapLocation) -> b
     return y >= len(puzzle) - 1 or x >= len(puzzle[0]) - 1 or y < 0 or x < 0
 
 
-def find_obstruction_locations_to_cause_loops(puzzle: list[list[str]], guard_location: MapLocation):
+def find_obstruction_locations_to_cause_loops(puzzle: list[list[str]], guard_location: MapLocation, original_guard_route: set[MapLocation]):
     number_of_obstruction_locations = 0
-    for y in range(len(puzzle)):
-        for x in range(len(puzzle[0])):
-            if puzzle[y][x] != OBSTRUCTION_SYMBOL and MapLocation(y, x) != guard_location:
-                test_puzzle = copy.deepcopy(puzzle)
-                test_puzzle[y][x] = OBSTRUCTION_SYMBOL
-                obstruction_location = MapLocation(x, y)
-                if predict_guard_route(test_puzzle, guard_location, True, obstruction_location) == -1:
-                    number_of_obstruction_locations += 1
+    for location in original_guard_route:
+        if location != guard_location:
+            test_puzzle = copy.deepcopy(puzzle)
+            test_puzzle[location.y][location.x] = OBSTRUCTION_SYMBOL
+            if predict_guard_route(test_puzzle, guard_location, True, location) == -1:
+                number_of_obstruction_locations += 1
     return number_of_obstruction_locations
 
 
@@ -73,5 +71,6 @@ if __name__ == "__main__":
         lines = map(str.split, fp.readlines())
         puzzle = [list(line[0]) for line in lines]
         guard_location = find_initial_guard_location(puzzle)
-        print(predict_guard_route(puzzle, guard_location))
-        print(find_obstruction_locations_to_cause_loops(puzzle, guard_location))
+        guard_route = predict_guard_route(puzzle, guard_location)
+        print(len(guard_route))
+        print(find_obstruction_locations_to_cause_loops(puzzle, guard_location, guard_route))
