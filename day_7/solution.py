@@ -1,6 +1,6 @@
 import itertools
 import operator
-from functools import partial
+from functools import partial, lru_cache, reduce
 
 
 def concatenation(a: int, b: int) -> int:
@@ -12,7 +12,6 @@ OPERATORS = [operator.add, operator.mul, concatenation]
 
 def equation_is_valid(required_result: int, operands: list[int]):
     operator_combos = itertools.product(OPERATORS, repeat=len(operands) - 1)
-    from functools import reduce
 
     def reducer(operator_combo, x: tuple[int, int], y: tuple[int, int]):
         index, _x = x
