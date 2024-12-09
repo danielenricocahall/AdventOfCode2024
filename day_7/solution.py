@@ -2,7 +2,12 @@ import itertools
 import operator
 from functools import partial
 
-OPERATORS = [operator.add, operator.mul]
+
+def concatenation(a: int, b: int) -> int:
+    return int(str(a) + str(b))
+
+
+OPERATORS = [operator.add, operator.mul, concatenation]
 
 
 def equation_is_valid(required_result: int, operands: list[int]):
@@ -30,7 +35,7 @@ def compute_total_calibration_result(equation_components: dict[int, list[int]]):
 
 
 if __name__ == "__main__":
-    with open('./puzzle_test.txt') as fp:
+    with open('./puzzle.txt') as fp:
         lines = map(str.strip, fp.readlines())
         equation_components = {}
         for line in lines:
