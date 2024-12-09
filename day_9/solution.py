@@ -17,11 +17,11 @@ def compact_file_blocks(disk_map_expanded_representation: str):
         return all(x[i].isdigit() for i in range(num_file_blocks))
 
     disk_map_expanded_representation = list(disk_map_expanded_representation)
+    indices_with_free_spaces = map(lambda x: x[0], filter(lambda x: x[1] == ".", enumerate(disk_map_expanded_representation)))
+    indices_with_file_blocks = map(lambda x: -x[0], filter(lambda x: x[1].isdigit(), enumerate(reversed(disk_map_expanded_representation), 1)))
     while not is_contiguous(disk_map_expanded_representation):
-        next_free_space = next(
-            i for i in range(len(disk_map_expanded_representation)) if disk_map_expanded_representation[i] == ".")
-        next_file_block = -next(i for i in range(1, len(disk_map_expanded_representation)) if
-                                disk_map_expanded_representation[-i].isdigit())
+        next_free_space = next(indices_with_free_spaces)
+        next_file_block = next(indices_with_file_blocks)
         disk_map_expanded_representation[next_free_space], disk_map_expanded_representation[next_file_block] = \
         disk_map_expanded_representation[next_file_block], disk_map_expanded_representation[next_free_space]
     return map(int, disk_map_expanded_representation[:num_file_blocks])
@@ -32,7 +32,7 @@ def calculate_checksum(compacted_file_blocks: list[int]):
 
 
 if __name__ == "__main__":
-    with open('./puzzle.txt') as fp:
+    with open('./puzzle_test.txt') as fp:
         disk_map = fp.read()
     expanded_disk_map_representation = expand_dense_disk_map_representation(disk_map)
 
