@@ -11,20 +11,21 @@ def expand_dense_disk_map_representation(disk_map: str) -> str:
 
 
 def compact_file_blocks(disk_map_expanded_representation: str):
-    num_file_blocks = sum(1 for x in disk_map_expanded_representation if x.isdigit())
-
-    def is_contiguous(x: list[str]):
-        return all(x[i].isdigit() for i in range(num_file_blocks))
-
-    disk_map_expanded_representation = list(disk_map_expanded_representation)
-    indices_with_free_spaces = map(lambda x: x[0], filter(lambda x: x[1] == ".", enumerate(disk_map_expanded_representation)))
-    indices_with_file_blocks = map(lambda x: -x[0], filter(lambda x: x[1].isdigit(), enumerate(reversed(disk_map_expanded_representation), 1)))
-    while not is_contiguous(disk_map_expanded_representation):
-        next_free_space = next(indices_with_free_spaces)
-        next_file_block = next(indices_with_file_blocks)
-        disk_map_expanded_representation[next_free_space], disk_map_expanded_representation[next_file_block] = \
-        disk_map_expanded_representation[next_file_block], disk_map_expanded_representation[next_free_space]
-    return map(int, disk_map_expanded_representation[:num_file_blocks])
+    print(disk_map_expanded_representation)
+    checksum = 0
+    indices_with_file_blocks = map(lambda x: len(disk_map_expanded_representation)-x[0], filter(lambda x: x[1].isdigit(), enumerate(reversed(disk_map_expanded_representation), 1)))
+    used_indices = set()
+    for i, memory_block in enumerate(disk_map_expanded_representation):
+        if memory_block == ".":
+            index = next(indices_with_file_blocks)
+        else:
+            index = i
+        if index in used_indices:
+            break
+        used_indices.add(index)
+        file_block = disk_map_expanded_representation[index]
+        checksum += (i * int(file_block))
+    return checksum
 
 
 def calculate_checksum(compacted_file_blocks: list[int]):
@@ -37,5 +38,4 @@ if __name__ == "__main__":
     expanded_disk_map_representation = expand_dense_disk_map_representation(disk_map)
 
     compacted_file_blocks = compact_file_blocks(expanded_disk_map_representation)
-    checksum = calculate_checksum(compacted_file_blocks)
-    print(checksum)
+    print(compacted_file_blocks)
