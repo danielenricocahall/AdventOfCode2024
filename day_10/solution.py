@@ -20,7 +20,7 @@ def find_trails(trailhead: tuple[int, int], topographic_map: list[list[int]], di
         if topographic_map[i][j] != next_value:
             return 0
         if next_value == END_OF_TRAIL:
-            if distinct and (current_position in visited):
+            if not distinct and (current_position in visited):
                 return 0
             visited.add(current_position)
             return 1
@@ -44,5 +44,5 @@ if __name__ == "__main__":
             topographic_map.append(list(map(int, line.strip())))
 
     trailheads = get_trailheads(topographic_map)
-
     print(sum(find_trails(trailhead, topographic_map, False) for trailhead in trailheads))
+    print(sum(find_trails(trailhead, topographic_map, True) for trailhead in trailheads))
