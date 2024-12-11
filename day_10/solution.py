@@ -4,6 +4,7 @@ from functools import lru_cache
 TRAILHEAD = 0
 END_OF_TRAIL = 9
 
+
 def get_trailheads(topographic_map: list[list[int]]) -> set[tuple[int, int]]:
     trailheads = list()
     for i in range(len(topographic_map)):
@@ -12,8 +13,10 @@ def get_trailheads(topographic_map: list[list[int]]) -> set[tuple[int, int]]:
                 trailheads.append((i, j))
     return trailheads
 
+
 def find_trails(trailhead: tuple[int, int], topographic_map: list[list[int]], distinct: bool = False):
     visited = set()
+
     def _find_trails(current_position: tuple[int, int], next_value: int):
         i, j = current_position
         window = []
@@ -33,6 +36,7 @@ def find_trails(trailhead: tuple[int, int], topographic_map: list[list[int]], di
         if j < len(topographic_map[0]) - 1:
             window.append((i, j + 1))
         return sum(_find_trails(position, next_value + 1) for position in window)
+
     result = _find_trails(trailhead, TRAILHEAD)
     return result
 
