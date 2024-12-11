@@ -1,6 +1,5 @@
-from collections import Counter, defaultdict
+from collections import defaultdict
 from datetime import datetime
-from functools import lru_cache
 
 
 def unpack_dict(vals: dict[int | tuple[int, int], int]):
