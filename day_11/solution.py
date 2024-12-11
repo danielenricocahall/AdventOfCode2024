@@ -16,16 +16,15 @@ def unpack_dict(vals: dict[int | tuple[int, int], int]):
 
 def blink(stones: list[int], num_blinks: int) -> int:
     count = len(stones)
-    foo = defaultdict(int)
+    current_counts = defaultdict(int)
     for stone in stones:
-        foo[stone] += 1
+        current_counts[stone] += 1
     for _ in range(num_blinks):
-        bar = defaultdict(int)
-        for k, v in foo.items():
-            bar[apply_rule(k)] += v
-        count += sum(v for k, v in bar.items() if isinstance(k, tuple))
-        bar = unpack_dict(bar)
-        foo = bar
+        next_counts = defaultdict(int)
+        for k, v in current_counts.items():
+            next_counts[apply_rule(k)] += v
+        count += sum(v for k, v in next_counts.items() if isinstance(k, tuple))
+        current_counts = next_counts
     return count
 
 
