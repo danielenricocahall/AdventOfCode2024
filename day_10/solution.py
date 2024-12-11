@@ -1,16 +1,13 @@
-from collections import Counter
-from functools import lru_cache
-
 TRAILHEAD = 0
 END_OF_TRAIL = 9
 
 
 def get_trailheads(topographic_map: list[list[int]]) -> set[tuple[int, int]]:
-    trailheads = list()
+    trailheads = set()
     for i in range(len(topographic_map)):
         for j in range(len(topographic_map[0])):
             if topographic_map[i][j] == TRAILHEAD:
-                trailheads.append((i, j))
+                trailheads.add((i, j))
     return trailheads
 
 
