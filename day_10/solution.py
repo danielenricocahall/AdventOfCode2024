@@ -39,7 +39,6 @@ def find_trails(trailhead: tuple[int, int], topographic_map: list[list[int]], di
 
 if __name__ == "__main__":
     topographic_map = []
-    trail_heads = 0
     with open('./puzzle.txt') as fp:
         for line in fp.readlines():
             topographic_map.append(list(map(int, line.strip())))
