@@ -30,36 +30,42 @@ class ClawMachine:
 
     def minimum_tokens_to_prize(self):
 
-        from pulp import LpProblem, LpVariable, LpInteger, LpMaximize, value
+        def compute_determinant(matrix: list[list[int]]) -> int:
+            a1, b1 = matrix[0]
+            a2, b2= matrix[1]
+            return a1 * b2 - b1 * a2
 
-        problem = LpProblem("Integer_Linear_Program", LpMaximize)
 
-        x1 = LpVariable("x1", lowBound=0, cat=LpInteger)
-        x2 = LpVariable("x2", lowBound=0, cat=LpInteger)
+        A = [[self.button_a_movement.x, self.button_b_movement.x],
+             [self.button_a_movement.y, self.button_b_movement.y]]
+        b = [self.prize_position.x, self.prize_position.y]
 
-        problem += x1 + x2, "Objective_Function"
+        D = compute_determinant(A)
+        D_x = compute_determinant([[b[0], self.button_b_movement.x],
+                                   [b[1], self.button_b_movement.y]])
+        D_y = compute_determinant([[self.button_a_movement.x, b[0]],
+                                   [self.button_a_movement.y, b[1]]])
 
-        problem += self.button_a_movement.x * x1 + self.button_b_movement.x * x2 == self.prize_position.x, "Constraint_1"
-        problem += self.button_a_movement.y * x1 + self.button_b_movement.y * x2 == self.prize_position.y, "Constraint_2"
+        x_sol = D_x / D
+        y_sol = D_y / D
 
-        status = problem.solve(PULP_CBC_CMD(msg=False))
-
-        if status == 1:
-            print(f"Minimum moves: ({value(x1)}, {value(x2)})")
-            return self.button_a_movement.cost * value(x1) + self.button_b_movement.cost * value(x2)
+        if int(x_sol) == x_sol and int(y_sol) == y_sol:
+            print(x_sol, y_sol)
+            return self.button_a_movement.cost * x_sol + self.button_b_movement.cost * y_sol
         else:
-            print("No optimal solution found.")
+            print("No solution found")
 
 
-def parse_input_into_claw_machines(_input: list[str]):
+def parse_input_into_claw_machines(_input: list[str], account_for_unit_conversion: bool = False):
     claw_machines = []
     current_claw_machine = []
     for line in _input:
         if not line:
-            claw_machines.append(create_claw_machine(current_claw_machine, False))
+            claw_machines.append(create_claw_machine(current_claw_machine, account_for_unit_conversion))
             current_claw_machine = []
         else:
             current_claw_machine.append(line)
+    claw_machines.append(create_claw_machine(current_claw_machine, account_for_unit_conversion))
     return claw_machines
 
 
@@ -76,10 +82,10 @@ def create_claw_machine(claw_machine_configuration: list[str], account_for_unit_
 
 
 if __name__ == "__main__":
-    with open('./puzzle_test.txt') as fp:
+    with open('./puzzle.txt') as fp:
         _input = list(map(str.strip, fp.readlines()))
 
-        claw_machines = parse_input_into_claw_machines(_input)
+        claw_machines = parse_input_into_claw_machines(_input,True)
         minimum_tokens_for_all_claw_machines = 0
         for claw_machine in claw_machines:
             minimum_tokens = claw_machine.minimum_tokens_to_prize()
