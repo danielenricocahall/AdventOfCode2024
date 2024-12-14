@@ -1,8 +1,6 @@
 import re
 from dataclasses import dataclass
 
-from pulp import PULP_CBC_CMD
-
 
 @dataclass
 class Position:
