@@ -1,7 +1,10 @@
 import re
 from dataclasses import dataclass
+from typing import Callable
 
 ROWS, COLS = 103, 101
+
+
 #ROWS, COLS = 7, 11
 
 
@@ -40,19 +43,29 @@ class Robot:
     def calculate_position_over_time(self, time: int):
         for _ in range(time):
             self.position += self.velocity
-            # for debugging
-            # display_robot_positions([self])
-            # print("\n")
 
 
-def display_robot_positions(robots: list[Robot]):
+def display_robot_positions_debug(robots: list[Robot]):
+    def assign_robot_counts(position):
+        if position == ".":
+            position = 1
+        else:
+            position += 1
+        return position
+
+    _display_robots_positions(robots, assign_robot_counts)
+
+
+def display_robot_positions_to_find_christmas_tree(robots: list[Robot]):
+    _display_robots_positions(robots, lambda *args: "#")
+
+
+def _display_robots_positions(robots: list[Robot], robot_symbol_assignment: Callable):
     floor_layout = [["."] * COLS for _ in range(ROWS)]
     for robot in robots:
-        if floor_layout[robot.position.y][robot.position.x] == ".":
-            floor_layout[robot.position.y][robot.position.x] = 1
-        else:
-            floor_layout[robot.position.y][robot.position.x] += 1
+        floor_layout[robot.position.y][robot.position.x] = robot_symbol_assignment(floor_layout[robot.position.y][robot.position.x])
     print(*["".join(map(str, row)) for row in floor_layout], sep='\n')
+    print('\n')
 
 
 def parse_positions_and_velocities_into_robots(lines: list[str]) -> list[Robot]:
@@ -85,7 +98,10 @@ if __name__ == "__main__":
     with open('./puzzle.txt') as fp:
         lines = list(map(str.strip, fp.readlines()))
         robots = parse_positions_and_velocities_into_robots(lines)
-        for robot in robots:
-            robot.calculate_position_over_time(100)
-        # display_robot_positions(robots)
+        for i in range(10000):
+            for robot in robots:
+                robot.calculate_position_over_time(1)
+            print(f"Seconds: {i}")
+            print('\n')
+            display_robot_positions_to_find_christmas_tree(robots)
         print(compute_safety_factor(robots))
