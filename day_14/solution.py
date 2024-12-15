@@ -1,11 +1,8 @@
 import re
 from dataclasses import dataclass
 
-
-ROWS = 101
-#ROWS = 7
-COLS = 103
-#COLS = 11
+ROWS, COLS = 103, 101
+#ROWS, COLS = 7, 11
 
 
 @dataclass
@@ -19,20 +16,18 @@ class RobotPosition:
             self.y += other.y
             if self.x < 0:
                 self.x = COLS + self.x
-            elif self.x >= COLS:
-                self.x -= COLS
             if self.y < 0:
                 self.y = ROWS + self.y
-            elif self.y >= ROWS:
-                self.y -= ROWS
+            self.x = self.x % COLS
+            self.y = self.y % ROWS
         return self
-
 
 
 @dataclass
 class RobotVelocity:
     x: int
     y: int
+
 
 class Robot:
     position: RobotPosition
@@ -69,9 +64,6 @@ def parse_positions_and_velocities_into_robots(lines: list[str]) -> list[Robot]:
     return robots
 
 
-
-
-
 def compute_safety_factor(robots: list[Robot]):
     # top left
     quadrant_1 = lambda robot: 0 <= robot.position.y < ROWS // 2 and 0 <= robot.position.x < COLS // 2
@@ -85,7 +77,9 @@ def compute_safety_factor(robots: list[Robot]):
     # bottom right
     quadrant_4 = lambda robot: ROWS // 2 < robot.position.y < ROWS and COLS // 2 < robot.position.x < COLS
 
-    return len(list(filter(quadrant_1, robots))) * len(list(filter(quadrant_2, robots))) * len(list(filter(quadrant_3, robots))) * len(list(filter(quadrant_4, robots)))
+    return len(list(filter(quadrant_1, robots))) * len(list(filter(quadrant_2, robots))) * len(
+        list(filter(quadrant_3, robots))) * len(list(filter(quadrant_4, robots)))
+
 
 if __name__ == "__main__":
     with open('./puzzle.txt') as fp:
@@ -95,4 +89,3 @@ if __name__ == "__main__":
             robot.calculate_position_over_time(100)
         # display_robot_positions(robots)
         print(compute_safety_factor(robots))
-
